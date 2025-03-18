@@ -11,7 +11,7 @@ include_once('vendor/autoload.php');
 include_once('inc/fun/core.php');
 include_once('gutenberg/index.php');
 
-
+include_once('lzwme/index.php');
 
 
 //去除感谢使用wordpress创作
@@ -287,9 +287,9 @@ function get_wpsmiliestrans()
 add_action('media_buttons', 'smilies_custom_button');
 function smilies_custom_button($context)
 {
-    echo '<a id="insert-smiley-button" style="position:relative" class="button" 
-        title="' . __('添加表情', PUOCK) . '" data-editor="content" href="javascript:;">  
-        <span>' . __('添加表情', PUOCK) . '</span> 
+    echo '<a id="insert-smiley-button" style="position:relative" class="button"
+        title="' . __('添加表情', PUOCK) . '" data-editor="content" href="javascript:;">
+        <span>' . __('添加表情', PUOCK) . '</span>
         </a><div id="insert-smiley-wrap" class="pk-media-wrap" style="display: none">' . get_wpsmiliestrans() . '</div>';
 }
 
@@ -429,7 +429,7 @@ function pk_icon_mate() {
     $pk_icon = pk_get_option('favicon');
     //未设置返回空
     if ($pk_icon === '') return '';
-    
+
     //连接字符串
     $str = '<link rel="shortcut icon" href="' . $pk_icon . '">
     <link rel="apple-touch-icon" href="' . $pk_icon . '"/>';
