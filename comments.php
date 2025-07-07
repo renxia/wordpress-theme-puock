@@ -129,9 +129,15 @@
             if (get_comments_number() > 0):
                 wp_list_comments(array(
                     'type' => 'comment',
+                    'short_ping' => true,
                     'callback' => 'pk_comment_callback',
                 ));
-                echo '</div>';
+
+                $pccci_key = 'pk_comment_callback_cur_id';
+                $pccci = $GLOBALS[$pccci_key] ?? '';
+                if (!empty($pccci)) {
+                    echo '</div>';
+                }
             endif;
             ?>
 
