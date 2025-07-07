@@ -12,6 +12,7 @@ class Puock {
 
     data = {
         tag: 'puock',
+        pc:true,
         params: {
             home: null,
             use_post_menu: false,
@@ -82,6 +83,8 @@ class Puock {
         this.eventPostMainBoxResize()
         this.swiperOnceEvent()
         this.initModalToggle()
+        this.detectDevice()
+        window.addEventListener('resize', ()=>this.detectDevice());
         layer.config({shade: 0.5})
         console.log("\n %c Puock Theme %c https://github.com/Licoy/wordpress-theme-puock \n\n",
             "color:#f1ab0e;background:#030307;padding:5px 0;border-top-left-radius:8px;border-bottom-left-radius:8px",
@@ -119,6 +122,11 @@ class Puock {
 
     ct(e) {
         return e.currentTarget
+    }
+
+    detectDevice() {
+        const screenWidth = window.innerWidth;
+        this.data.pc = screenWidth >= 768
     }
 
     initBasicDOMEvent() {
@@ -370,21 +378,27 @@ class Puock {
                 duration: 50,
                 easing: "swing"
             });
+            if(!this.data.pc){
+                this.toggleMenu()
+            }
             return false;
         });
     }
 
     toggleMenu() {
-        const el = $("#post-menu-state")
+        const menuContainer = $("#post-menus");
+        const menuButton = $("#post-menu-state");
         const className = "data-open";
-        const open = el.hasClass(className);
-        const content = $("#post-menu-content");
-        if (open) {
-            content.hide();
-            el.removeClass(className);
+        const isOpen = menuButton.hasClass(className);
+        
+        if (isOpen) {
+            // 关闭菜单
+            menuContainer.removeClass("show");
+            menuButton.removeClass(className);
         } else {
-            content.show();
-            el.addClass(className);
+            // 打开菜单
+            menuContainer.addClass("show");
+            menuButton.addClass(className);
         }
     }
 

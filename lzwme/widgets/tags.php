@@ -33,7 +33,7 @@ class LzwmeWidgetTags extends WP_Widget {
         $result .= '<div class="widget-puock-tag-cloud tag_clouds">';
         $result .= $tags;
         $result .= '</div>';
-        // $result .= $after_widget;
+        $result .= $after_widget;
         echo $result;
     }
 
