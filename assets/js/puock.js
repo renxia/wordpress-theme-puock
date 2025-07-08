@@ -390,7 +390,7 @@ class Puock {
         const menuButton = $("#post-menu-state");
         const className = "data-open";
         const isOpen = menuButton.hasClass(className);
-        
+
         if (isOpen) {
             // 关闭菜单
             menuContainer.removeClass("show");
@@ -502,7 +502,8 @@ class Puock {
     getPostMenuStructure() {
         let res = []
         for (let item of $(".entry-content").find('h1,h2,h3,h4,h5,h6')) {
-            res.push({name: $(item).text().trim(), level: item.tagName.toLowerCase(), id: $(item).attr("id")})
+            const id = $(item).attr("id")
+            if (id) res.push({name: $(item).text().trim(), level: item.tagName.toLowerCase(), id })
         }
         return res
     }
