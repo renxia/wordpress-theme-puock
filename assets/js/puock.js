@@ -258,6 +258,14 @@ class Puock {
             const el = $(this.ct(e));
             this.goUrl(el.attr("action") + "/?" + el.serialize())
         })
+        // ctrl+k 组合键聚焦搜索
+        $(document).on('keydown', ev => {
+            if (ev.ctrlKey && ev.key === 'k') {
+                ev.preventDefault()
+                toggle()
+                return false
+            }
+        })
     }
 
     goUrl(url) {
