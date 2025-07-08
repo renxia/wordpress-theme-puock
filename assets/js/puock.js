@@ -1161,8 +1161,19 @@ class Puock {
         });
     }
 
+    hitokotoTimer = null
     loadHitokoto() {
-        setTimeout(() => {
+        if (!this.hitokotoTimer) {
+            $('.widget-puock-hitokoto').on('click', e => {
+                let api = $(e.delegateTarget).attr('data-api').split('?')[0]
+                $(e.delegateTarget).attr('data-api', api + '?t=' + Date.now())
+                this.loadHitokoto()
+            })
+        } else {
+            clearTimeout(this.hitokotoTimer)
+        }
+
+        this.hitokotoTimer = setTimeout(() => {
             $(".widget-puock-hitokoto").each((_, v) => {
                 const el = $(v);
                 const api = el.attr("data-api") || "https://v1.hitokoto.cn/"
