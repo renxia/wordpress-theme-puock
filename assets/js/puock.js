@@ -501,9 +501,11 @@ class Puock {
             this.toast(`复制${name}失败`, TYPE_DANGER)
         })
         this.lazyLoadInit()
-        $('#post-main, #sidebar').theiaStickySidebar({
-            additionalMarginTop: 20
-        });
+        if ($('#post-main').length > 0) {
+            $('#post-main, #sidebar').theiaStickySidebar({
+                additionalMarginTop: 20
+            });
+        }
     }
 
 
