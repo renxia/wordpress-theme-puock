@@ -7,8 +7,8 @@ function puock_post_like()
     if ($action == 'like') {
         $cookie_key = 'puock_like_' . $id;
         if (!empty($_COOKIE[$cookie_key])) {
-            echo json_encode(array('e' => 1, 't' => '你已经点过赞了'));
-            die;
+        echo json_encode(array('e' => 1, 't' => __('你已经点过赞了', PUOCK)));
+        die;
         }
         $like_num = get_post_meta($id, 'puock_like', true);
         $expire = time() + (86400);
@@ -19,7 +19,7 @@ function puock_post_like()
         } else {
             update_post_meta($id, 'puock_like', ($like_num + 1));
         }
-        echo json_encode(array('e' => 0, 't' => '点赞成功', 'd' => get_post_meta($id, 'puock_like', true)));
+        echo json_encode(array('e' => 0, 't' => __('点赞成功', PUOCK), 'd' => get_post_meta($id, 'puock_like', true)));
     }
     die;
 }
@@ -106,7 +106,7 @@ function pk_theme_footer_copyright($content)
 {
     global $pk_right_slug;
     $content .= pk_get_option('footer_info');
-    if(!pk_is_checked('ext_dont_show_copyright')){
+    if (!pk_is_checked('ext_dont_show_copyright')) {
         $content .= str_replace('{PUOCK_VERSION}', PUOCK_CUR_VER_STR, base64_decode($pk_right_slug));
     }
     return $content;
@@ -152,7 +152,8 @@ function v2ex_ssl_avatar($avatar)
     return str_replace("http://", "https://", str_replace("/avatar", "/gravatar", str_replace($gravatar_urls, 'cdn.v2ex.com', $avatar)));
 }
 
-function pk_custom_avatar($avatar){
+function pk_custom_avatar($avatar)
+{
     global $gravatar_urls;
     return str_replace($gravatar_urls, pk_get_option('gravatar_custom_url'), $avatar);
 }
@@ -175,7 +176,7 @@ function comment_mail_notify($comment_id)
         if ($to == $comment->comment_author_email) {
             return;
         }
-        $subject = '您在 [' . get_option("blogname") . '] 的文章评论有了新的回复';
+        $subject = sprintf(__('您在 [%s] 的文章评论有了新的回复', PUOCK), get_option("blogname"));
         $message = get_comment_notify_template($comment, $parent_id);
         $from = "From: \"" . get_option('blogname') . "\" <$wp_email>";
         $headers = "$from\nContent-Type: text/html; charset=" . get_option('blog_charset') . "\n";
@@ -234,7 +235,7 @@ function wp_compress_html()
         $count = count($buffer);
         $out = "";
         for ($i = 0; $i <= $count; $i++) {
-            if(!($buffer[$i] ?? null)){
+            if (!($buffer[$i] ?? null)) {
                 continue;
             }
             if (stristr($buffer[$i], '<!--wp-compress-html no compression-->')) {
@@ -253,7 +254,7 @@ function wp_compress_html()
         $final = strlen($out);
         $savings = ($initial - $final) / $initial * 100;
         $savings = round($savings, 2);
-        $info = "<!--压缩前为:{$initial}bytes;压缩后为:{$final}bytes;节约:{$savings}%-->";
+        $info = "<!--" . sprintf(__('压缩前为:%dbytes;压缩后为:%dbytes;节约:%s%%', PUOCK), $initial, $final, $savings) . "-->";
         return $out . $info;
     }
 
@@ -283,20 +284,22 @@ if (pk_is_checked('link_go_page')) {
      * @author lvshujun
      * @date 2024-03-19
      */
-    function pk_content_addlink($content) {
+    function pk_content_addlink($content)
+    {
         //匹配链接
-        preg_match_all('/<a(.*?)href="(.*?)"(.*?)>/',$content,$matches);
+        preg_match_all('/<a(.*?)href="(.*?)"(.*?)>/', $content, $matches);
         if ($matches) {
             foreach ($matches[2] as $val) {
-                if (strpos($val,'://') !== false 
-                    && pk_is_cur_site($val) === false 
-                    && !preg_match('/\.(jpg|jepg|png|ico|bmp|gif|tiff)/i',$val)) {
-                    $content = str_replace('href="'.$val.'"', 'href="'.pk_go_link($val).'"', $content);
+                if (strpos($val, '://') !== false
+                    && pk_is_cur_site($val) === false
+                    && !preg_match('/\.(jpg|jepg|png|ico|bmp|gif|tiff)/i', $val)) {
+                    $content = str_replace('href="' . $val . '"', 'href="' . pk_go_link($val) . '"', $content);
                 }
             }
         }
         return $content;
     }
+
     add_filter('the_content', 'pk_content_addlink');
 }
 
@@ -416,7 +419,7 @@ function pk_captcha()
     }
     $width = $_GET['w'];
     $height = $_GET['h'];
-    include_once PUOCK_ABS_DIR.'/inc/php-captcha.php';
+    include_once PUOCK_ABS_DIR . '/inc/php-captcha.php';
     $captcha = new CaptchaBuilder();
     $captcha->initialize([
         'width' => intval($width),     // 宽度
@@ -524,7 +527,7 @@ function pk_debug_print_sql_list()
     $show_sql_detail = pk_get_option('debug_sql_detail');
     $out = "<script>";
     if ($show_sql_count) {
-        $out .= "console.log('共计查询SQL：" . get_num_queries() . "次，耗时：" . timer_stop() . "秒');";
+        $out .= "console.log('" . sprintf(__('共计查询SQL：%d次，耗时：%s秒', PUOCK), get_num_queries(), timer_stop()) . "');";
     }
     if ($show_sql_detail) {
         $out .= "console.log(" . json_encode($wpdb->queries) . ");";
@@ -580,7 +583,7 @@ function get_entry_content_class($echo = true)
 function pk_disable_not_admin_user_profile()
 {
     if (is_admin() && !current_user_can('administrator')) {
-        wp_die('您无权访问');
+        wp_die(__('您无权访问', PUOCK));
     }
 }
 
@@ -593,7 +596,7 @@ function pk_read_time_tip(): string
 {
     $words_count = count_words();
     $read_time = ceil($words_count / 400);
-    return sprintf(__('共计 %d 个字符，预计需要花费 %d 分钟才能阅读完成。'), $words_count, $read_time);
+    return sprintf(__('共计 %d 个字符，预计需要花费 %d 分钟才能阅读完成。', PUOCK), $words_count, $read_time);
 }
 
 function pk_set_custom_seo($title, $keywords = '', $description = '')
@@ -616,8 +619,9 @@ function pk_safe_base64_encode($string)
     return str_replace(array('+', '/', '='), array('-', '_', ''), $data);
 }
 
-function pk_safe_base64_decode($string){
-    $data = str_replace(array('-','_'),array('+','/'),$string);
+function pk_safe_base64_decode($string)
+{
+    $data = str_replace(array('-', '_'), array('+', '/'), $string);
     $mod4 = strlen($data) % 4;
     if ($mod4) {
         $data .= substr('====', $mod4);
@@ -632,10 +636,10 @@ function pk_post_expire_tips_open($content)
     $u_time = get_the_time('U');
     $u_modified_time = get_the_modified_time('U');
     $custom_content = '';
-    if ($u_modified_time >= $u_time + (86400*pk_get_option('post_expire_tips_day',100))) {
+    if ($u_modified_time >= $u_time + (86400 * pk_get_option('post_expire_tips_day', 100))) {
         $updated_date = get_the_modified_time('Y-m-d H:i');
-        $tips = str_replace('{date}', $updated_date, pk_get_option('post_expire_tips',''));
-        $custom_content .= '<p class="fs12 c-sub">'.$tips.'</p>';
+        $tips = str_replace('{date}', $updated_date, pk_get_option('post_expire_tips', ''));
+        $custom_content .= '<p class="fs12 c-sub">' . $tips . '</p>';
     }
     $custom_content .= $content;
     return $custom_content;
@@ -649,14 +653,14 @@ if (pk_is_checked('post_expire_tips_open')) {
 function pk_ava_home_banners()
 {
     $index_carousel_list = pk_get_option('index_carousel_list', []);
-    if (is_array($index_carousel_list) && count($index_carousel_list) > 0){
+    if (is_array($index_carousel_list) && count($index_carousel_list) > 0) {
         $ava = [];
-        foreach ($index_carousel_list as $item){
+        foreach ($index_carousel_list as $item) {
             if (($item['hide'] ?? false) || empty($item['img'])) continue;
             $ava[] = $item;
         }
         return $ava;
-    }else{
+    } else {
         return false;
     }
 }

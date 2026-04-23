@@ -14,6 +14,7 @@ $headMetas = [
     'vd_gt_id' => pk_get_option('vd_gt_id'),
     'vd_type' => pk_get_option('vd_type', 'img'),
     'use_post_menu' => pk_is_checked('use_post_menu'),
+    'use_post_menu_open' => pk_is_checked('use_post_menu_open'),
     'is_single' => is_single(),
     'is_pjax' => pk_is_checked('page_ajax_load'),
     'main_lazy_img' => pk_is_checked('basic_img_lazy_z'),
@@ -22,6 +23,9 @@ $headMetas = [
     'mode_switch' => pk_is_checked('theme_mode_s'),
     'off_img_viewer'=>pk_is_checked('off_img_viewer'),
     'off_code_highlighting'=>pk_is_checked('off_code_highlighting'),
+    'mobile_sidebar_enable' => pk_is_checked('mobile_sidebar_enable'),
+    'cn_sc_tc_toggle' => pk_is_checked('cn_sc_tc_toggle'),
+    'cn_sc_tc_default' => pk_get_option('cn_sc_tc_default', 'sc'),
 ];
 if($headMetas['async_view_id']){
     $headMetas['async_view_generate_time'] = time();

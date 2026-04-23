@@ -15,7 +15,7 @@
         <img src="https://img.shields.io/github/v/release/Licoy/wordpress-theme-puock.svg?logo=git" alt="Release-Version">
       </a>
     <a target="_blank" href="https://github.com/Licoy/wordpress-theme-puock">
-        <img src="https://img.shields.io/badge/WordPress-V5.0+-0099CC.svg?logo=wordpress" alt="WordPress-Version">
+        <img src="https://img.shields.io/badge/WordPress-V6.0+-0099CC.svg?logo=wordpress" alt="WordPress-Version">
       </a>
     <a target="_blank" href="https://github.com/Licoy/wordpress-theme-puock">
         <img src="https://img.shields.io/badge/PHP-V7.4+-666699.svg?logo=php" alt="PHP-Version">
@@ -63,10 +63,12 @@
 
 - [x] 支持白天与暗黑模式
 - [x] 全局无刷新加载
+- [x] 首页加载更多
 - [x] 支持博客、CMS、企业三种布局
 - [x] 内置WP优化策略
 - [x] 内置前台用户中心
 - [x] 支持QQ / Github / Gitee / 微博登录
+- [x] 支持彩虹聚合登录
 - [x] 支持缩略图伪静态
 - [x] 全局顶部滚动公告
 - [x] 图形及极验验证码支持
@@ -74,8 +76,10 @@
 - [x] 一键全站变灰
 - [x] 网页压缩成一行
 - [x] 后台防恶意登录
+- [x] 自动/跟随系统色彩模式
 - [x] 内置出色的SEO功能
 - [x] 评论ajax加载
+- [x] 阅读时间与字数统计
 - [x] 文章点赞、打赏、海报生成、分享
 - [x] Twemoji集成
 - [x] 丰富的广告位
@@ -87,10 +91,17 @@
 - [x] 仿MacOS的代码风格及拷贝代码
 - [x] Vue3+NaiveUI集成的高颜值后台配置
 - [x] 文章多级目录生成
+- [x] 目录多级展开
 - [x] 侧边栏粘性滚动
+- [x] 移动端侧边栏
 - [x] WP缓存支持
 - [x] 自定义主色调
 - [x] LOGO扫光动画
+- [x] 骨架屏加载
+- [x] 图片/头像懒加载
+- [x] 前台登录/注册/找回密码
+- [x] 主题设置重置
+- [x] 用户中心第三方账号绑定
 - [x] ChatGPT及AI绘画支持
 - [x] 更多特性更新请查阅版本发布说明：[releases](https://github.com/Licoy/wordpress-theme-puock/releases)
 - [x] 更多功能等你的[提议](https://github.com/Licoy/wordpress-theme-puock/issues)
@@ -98,6 +109,7 @@
 ## 文档
 
 - 主题使用文档：[立即使用](https://www.licoy.cn/puock-doc.html)
+- **功能使用指南：[查看详细教程](./USAGE.md)** （友情链接、提示框等功能的详细使用说明）
 - 建议或BUG反馈：[立即进入](https://github.com/Licoy/wordpress-theme-puock/issues)
 - QQ/微信交流群：[点我加入](https://licoy.cn/go/puock-update.php?r=qq_qun) （此群皆为大家提供交流使用的地方，有BUG请直接提交ISSUE）
 - **若您有任何建议或BUG发现，并且您也有解决或实现的思路，欢迎直接提交PR！**
@@ -111,10 +123,7 @@
 [![Stargazers over time](https://starchart.cc/Licoy/wordpress-theme-puock.svg)](https://starchart.cc/Licoy/wordpress-theme-puock)
 
 ## 鸣谢
-
 - [Jetbrains](https://www.jetbrains.com/?from=wordpress-theme-puock)
-- [Cloudflare](https://www.cloudflare.com/?from=wordpress-theme-puock)
-- <a href="http://idc.daozhiyun.cn"><img src="https://sv.png.pub/imgs/2024/06/26/fd4efab4bfd2bb9e.png" width="100"></a>
 
 ## 开源协议
 

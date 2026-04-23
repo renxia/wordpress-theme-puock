@@ -2,6 +2,36 @@
 
 function get_comment_notify_template($comment,$parent_id)
 {
+    $blog_name = get_option('blogname');
+    $article_title = get_the_title($comment->comment_post_ID);
+    $comment_link = get_comment_link($parent_id,array("type" => "all"));
+    $parent_comment_content = trim(get_comment($parent_id)->comment_content);
+    $reply_author = $comment->comment_author;
+    $reply_content = trim($comment->comment_content);
+    $primary_color = pk_get_option('email_primary_color', '#007bff');
+    $header_img = pk_get_option('email_header_img', '');
+    
+    $header_text = sprintf(
+        /* translators: 1: Blog name, 2: Link to article, 3: Article title */
+        __('您在%1$s的<a href="%2$s" target="_blank">《%3$s》</a>文章中的评论有了新的回复：', PUOCK),
+        $blog_name,
+        $comment_link,
+        $article_title
+    );
+    
+    $your_comment_text = __('你的评论内容为：', PUOCK);
+    $reply_text = sprintf(
+        /* translators: %s: Author name of the reply */
+        __('您收到"%s"对您的回复为：', PUOCK),
+        $reply_author
+    );
+    $view_article_text = sprintf(
+        /* translators: %s: Link to the comment */
+        __('您也可以<a target="_blank" href="%s">直接点我进入原文章</a>以查看评论~', PUOCK),
+        $comment_link
+    );
+    $footer_text = __('此邮件由系统发出，请勿直接回复，谢谢合作！', PUOCK);
+    
     $res = "
     <style>
         #p-mail-notify{
@@ -19,19 +49,30 @@ function get_comment_notify_template($comment,$parent_id)
             padding:0 5px;
         }
         #p-mail-notify .header,#p-mail-notify .footer{
-            background-color: #007bff;
+            background-color: {$primary_color};
             padding:15px;
             color:#fff;
+        }
+        #p-mail-notify .header-img img{
+            width:100%;
+            max-height:200px;
+            object-fit:cover;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
         }
         #p-mail-notify .header{
             border-top-left-radius: 10px;
             border-top-right-radius: 10px;
         }
+        #p-mail-notify .header-img + .header{
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
+        }
         #p-mail-notify .header a{
             color:#ffcc33;
         }
         #p-mail-notify .main .tips a{
-            color:#007bff;
+            color:{$primary_color};
         }
         #p-mail-notify .footer{
             font-size: 12px;
@@ -54,25 +95,32 @@ function get_comment_notify_template($comment,$parent_id)
             color:#343a40;
         }
     </style>
-    <div id=\"p-mail-notify\">
+    <div id=\"p-mail-notify\">";
+    if (!empty($header_img)) {
+        $res .= "
+        <div class=\"header-img\">
+            <img src=\"{$header_img}\" alt=\"{$blog_name}\">
+        </div>";
+    }
+    $res .= "
         <div class=\"header\">
-            您在".get_option('blogname')."的<a href=\"".get_comment_link($parent_id,array("type" => "all"))."\" target=\"_blank\">《".get_the_title($comment->comment_post_ID)."》</a>文章中的评论有了新的回复：
+            {$header_text}
         </div>
         <div class=\"main\">
-            你的评论内容为：
+            {$your_comment_text}
             <div class=\"content-item me\">
-                ". trim(get_comment($parent_id)->comment_content) ."
+                {$parent_comment_content}
             </div>
-            您收到\"".$comment->comment_author."\"对您的回复为：
+            {$reply_text}
             <div class=\"content-item\">
-                ". trim($comment->comment_content) ."
+                {$reply_content}
             </div>
             <div class=\"tips\">
-                您也可以<a target=\"_blank\" href=\"".get_comment_link($parent_id,array("type" => "all"))."\">直接点我进入原文章</a>以查看评论~
+                {$view_article_text}
             </div>
         </div>
         <div class=\"footer\">
-            <span>此邮件由系统发出，请勿直接回复，谢谢合作！</span>
+            <span>{$footer_text}</span>
         </div>
     </div>";
     return $res;

@@ -51,6 +51,12 @@ class OptionGlobal extends BaseOptionItem
                     ],
                 ],
                 [
+                    'id' => 'blog_show_load_more',
+                    'label' => __('博客模式显示加载更多', PUOCK),
+                    'type' => 'switch',
+                    'sdt' => false,
+                ],
+                [
                     'id' => 'theme_mode',
                     'label' => __('主题模式', PUOCK),
                     'type' => 'radio',
@@ -201,6 +207,13 @@ class OptionGlobal extends BaseOptionItem
                     'label' => __('禁止使用', PUOCK) . ' XML-RPC',
                     'type' => 'switch',
                     'sdt' => 'false',
+                ],
+                [
+                    'id' => 'disable_timthumb',
+                    'label' => __('禁用timthumb缩略图', PUOCK),
+                    'type' => 'switch',
+                    'sdt' => false,
+                    'tips' => __('开启后将禁用timthumb缩略图裁剪功能，直接使用原始图片链接', PUOCK),
                 ],
                 [
                     'id' => 'thumbnail_rewrite_open',

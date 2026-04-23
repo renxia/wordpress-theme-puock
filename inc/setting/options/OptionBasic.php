@@ -13,10 +13,25 @@ class OptionBasic extends BaseOptionItem
             'icon' => 'dashicons-admin-generic',
             'fields' => [
                 [
+                    'id' => 'mobile_sidebar_enable',
+                    'label' => __('移动端侧边栏启用', PUOCK),
+                    'type' => 'switch',
+                    'sdt' => 'false',
+                    'badge' => ['value' => 'New'],
+                    'tips' => __('开启后，移动端将显示侧边栏按钮', PUOCK)
+                ],
+                [
                     'id' => 'basic_img_lazy_s',
                     'label' => __('图片懒加载', PUOCK),
                     'type' => 'switch',
                     'sdt' => 'false',
+                ],
+                [
+                    'id' => 'lazy_placeholder_url',
+                    'label' => __('懒加载占位图链接', PUOCK),
+                    'type' => 'text',
+                    'sdt' => '',
+                    'tips' => __('自定义懒加载占位图URL（留空使用主题默认占位图）', PUOCK),
                 ],
                 [
                     'id' => 'basic_img_lazy_z',
@@ -68,6 +83,14 @@ class OptionBasic extends BaseOptionItem
                     'tips' => __('勾选此项会在正文目录显示文章目录', PUOCK),
                 ],
                 [
+                    'id' => 'use_post_menu_open',
+                    'label' => __('目录菜单默认展开', PUOCK),
+                    'type' => 'switch',
+                    'sdt' => 'false',
+                    'showRefId' => 'use_post_menu',
+                    'tips' => __('开启后文章目录菜单将默认展开显示', PUOCK),
+                ],
+                [
                     'id' => 'comment_ajax',
                     'label' => __('评论ajax翻页', PUOCK),
                     'type' => 'switch',
@@ -78,7 +101,7 @@ class OptionBasic extends BaseOptionItem
                     'label' => __('页面无刷新加载', PUOCK),
                     'type' => 'switch',
                     'sdt' => 'false',
-                    'tips' => "新标签页打开的链接除外"
+                    'tips' => __("新标签页打开的链接除外", PUOCK)
                 ],
                 [
                     'id' => 'async_view',
@@ -86,6 +109,13 @@ class OptionBasic extends BaseOptionItem
                     'type' => 'switch',
                     'sdt' => 'false',
                     'tips' => __('此选项为开启缓存后浏览量不自增问题解决方案', PUOCK)
+                ],
+                [
+                    'id' => 'view_dedupe_hours',
+                    'label' => __('浏览量去重小时数', PUOCK),
+                    'type' => 'number',
+                    'sdt' => 24,
+                    'tips' => __('同一用户在该时间窗口内重复访问不计入阅读量（0为不去重）', PUOCK)
                 ],
                 [
                     'id' => 'page_animate',
@@ -98,6 +128,31 @@ class OptionBasic extends BaseOptionItem
                     'label' => __('页面内容链接前显示图标', PUOCK),
                     'type' => 'switch',
                     'sdt' => false,
+                ],
+                [
+                    'id' => 'cn_sc_tc_toggle',
+                    'label' => __('简繁体切换按钮', PUOCK),
+                    'type' => 'switch',
+                    'sdt' => false,
+                    'tips' => __('开启后，导航栏将显示简繁体切换按钮', PUOCK),
+                ],
+                [
+                    'id' => 'cn_sc_tc_default',
+                    'label' => __('默认中文字形', PUOCK),
+                    'type' => 'radio',
+                    'sdt' => 'sc',
+                    'radioType' => 'button',
+                    'options' => [
+                        [
+                            'value' => 'sc',
+                            'label' => __('简体', PUOCK),
+                        ],
+                        [
+                            'value' => 'tc',
+                            'label' => __('繁体', PUOCK),
+                        ],
+                    ],
+                    'tips' => __('可设定站点默认以简体或繁体显示；开启上方按钮后前台可手动切换', PUOCK),
                 ],
                 [
                     'id' => '-',
@@ -167,12 +222,20 @@ class OptionBasic extends BaseOptionItem
                             'type' => 'switch',
                             'sdt' => false,
                         ],
+                        [
+                            'id' => 'comment_duplicate_check',
+                            'label' => __('启用重复评论检测', PUOCK),
+                            'type' => 'switch',
+                            'sdt' => false,
+                            'tips' => __('开启后将禁止用户发表完全相同的评论内容。关闭后用户可以发送重复的简短回复（如"谢谢"），推荐关闭以提升用户体验', PUOCK),
+                        ],
                     ]
                 ],
                 [
                     'id' => 'post_poster_open',
                     'label' => __('文章海报生成', PUOCK),
-                    'tips' => __('使用此功能如果出现图片无法生成，请检查图片是否符合跨域要求', PUOCK),
+                    'tips' => __('使用此功能如果出现图片无法生成，请检查图片是否符合跨域要求；若站点logo不显示，请将logo上传到媒体库并使用媒体库中的logo链接', PUOCK),
+
                     'type' => 'switch',
                     'sdt' => false,
                 ],

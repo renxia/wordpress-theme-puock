@@ -70,7 +70,7 @@ class OptionAuth extends BaseOptionItem
                             'sdt' => 'false',
                             'tips' => 'func:(function(args){
                             const link = `' . home_url() . '/wp-login.php?${args.data.lp_user}=${args.data.lp_pass}`
-                            return `<div>启用后则用 <a href="${link}" target="_blank">${link}</a> 的方式访问后台入口</div>`
+                            return `<div>' . __('启用后则用', PUOCK) . ' <a href="${link}" target="_blank">${link}</a> ' . __('的方式访问后台入口', PUOCK) . '</div>`
                         })(args)'
                         ],
                         [
@@ -92,7 +92,7 @@ class OptionAuth extends BaseOptionItem
                     'label' => __('第三方登录回调地址提示', PUOCK),
                     'type' => 'info',
                     'infoType' => 'info',
-                    'tips' => '通用回调地址（callback url）为: <code>' . home_url() . '/wp-admin/admin-ajax.php</code>'
+                    'tips' => sprintf(__('通用回调地址（callback url）为: <code>%s</code>', PUOCK), home_url() . '/wp-admin/admin-ajax.php')
                 ],
                 [
                     'id' => 'oauth_close_register',
@@ -221,7 +221,7 @@ class OptionAuth extends BaseOptionItem
                             'label' => __('第三方登录回调地址提示', PUOCK),
                             'type' => 'info',
                             'infoType' => 'info',
-                            'tips' => '通用回调地址（callback url）为: <code>' . PUOCK_ABS_URI . '/inc/oauth/callback/linuxdo.php</code>'
+                            'tips' => sprintf(__('通用回调地址（callback url）为: <code>%s</code>', PUOCK), PUOCK_ABS_URI . '/inc/oauth/callback/linuxdo.php')
                         ],
                         [
                             'id' => 'oauth_linuxdo',
@@ -240,6 +240,73 @@ class OptionAuth extends BaseOptionItem
                             'label' => 'LinuxDO Client Secret',
                             'sdt' => '',
                             'showRefId' => 'oauth_linuxdo',
+                        ],
+                    ]
+                ],
+                [
+                    'id' => '-',
+                    'label' => __('彩虹聚合登录', PUOCK) . ' ' . __('登录配置', PUOCK),
+                    'type' => 'panel',
+                    'open' => pk_is_checked('oauth_ccy'),
+                    'tips' => '<a target="_blank" href="https://u.cccyun.cc/doc.php">' . __('申请步骤及说明', PUOCK) . '</a>',
+                    'children' => [
+                        [
+                            'id' => '-',
+                            'label' => __('第三方登录回调地址提示', PUOCK),
+                            'type' => 'info',
+                            'infoType' => 'info',
+                            'tips' => sprintf(__('回调域名为: <code>%s</code>', PUOCK), str_replace(['http://','https://'],'',home_url()))
+                        ],
+                        [
+                            'id' => 'oauth_ccy',
+                            'label' => __('彩虹聚合登录', PUOCK) . ' ' . __('登录', PUOCK),
+                            'type' => 'switch',
+                            'sdt' => 'false',
+                        ],
+                        [
+                            'id' => 'oauth_ccy_api',
+                            'label' => __('接口地址', PUOCK),
+                            'tips' => __('彩虹聚合登录接口地址（不含路径），例如：https://u.cccyun.cc', PUOCK),
+                            'sdt' => 'https://u.cccyun.cc',
+                            'showRefId' => 'oauth_ccy',
+                        ],
+                        [
+                            'id' => 'oauth_ccy_appid',
+                            'label' => __('彩虹聚合登录 AppID', PUOCK),
+                            'sdt' => '',
+                            'showRefId' => 'oauth_ccy',
+                        ],
+                        [
+                            'id' => 'oauth_ccy_appkey',
+                            'label' => __('彩虹聚合登录 AppKey', PUOCK),
+                            'sdt' => '',
+                            'showRefId' => 'oauth_ccy',
+                        ],
+                        [
+                            'id' => 'oauth_ccy_types',
+                            'label' => __('自定义登录方式类型', PUOCK),
+                            'type' => 'dynamic-list',
+                            'tips' => __('每项将生成一个登录按钮，provider key 固定前缀为：ccy_{value}', PUOCK),
+                            'sdt' => [
+                                ['label' => __('QQ', PUOCK), 'value' => 'qq', 'icon' => 'fa-brands fa-qq', 'color_type' => 'danger'],
+                                ['label' => __('微信', PUOCK), 'value' => 'wx', 'icon' => 'fa-brands fa-weixin', 'color_type' => 'success'],
+                            ],
+                            'draggable' => true,
+                            'dynamicModel' => [
+                                ['id' => 'label', 'label' => __('名称', PUOCK), 'std' => '', 'tips' => __('显示在按钮上的名称', PUOCK)],
+                                ['id' => 'value', 'label' => __('对应值', PUOCK), 'std' => '', 'tips' => __('彩虹登录方式 type 值，例如 qq/wx/alipay/sina/baidu', PUOCK)],
+                                ['id' => 'icon', 'label' => __('图标', PUOCK), 'std' => '', 'tips' => __('FontAwesome class 或图片 URL', PUOCK)],
+                                ['id' => 'color_type', 'label' => __('主题色', PUOCK), 'std' => 'primary', 'type' => 'select', 'options' => [
+                                    ['label' => 'primary', 'value' => 'primary'],
+                                    ['label' => 'success', 'value' => 'success'],
+                                    ['label' => 'danger', 'value' => 'danger'],
+                                    ['label' => 'info', 'value' => 'info'],
+                                    ['label' => 'warning', 'value' => 'warning'],
+                                    ['label' => 'dark', 'value' => 'dark'],
+                                    ['label' => 'secondary', 'value' => 'secondary'],
+                                ]],
+                            ],
+                            'showRefId' => 'oauth_ccy',
                         ],
                     ]
                 ],

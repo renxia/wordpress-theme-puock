@@ -61,30 +61,20 @@ function pk_the_author_class_out($count)
     if ($count <= 0) {
         return '';
     }
-    switch ($count) {
-        case $count >= 1 && $count < 20:
-            $level = 1;
-            break;
-        case $count >= 20 && $count < 40:
-            $level = 2;
-            break;
-        case $count >= 40 && $count < 60:
-            $level = 3;
-            break;
-        case $count >= 60 && $count < 80:
-            $level = 4;
-            break;
-        case $count >= 120 && $count < 120:
-            $level = 5;
-            break;
-        case $count >= 140 && $count < 140:
-            $level = 6;
-            break;
-        case $count >= 160 && $count < 160:
-            $level = 7;
-            break;
-        default:
-            return '';
+    if ($count < 20) {
+        $level = 1;
+    } elseif ($count < 40) {
+        $level = 2;
+    } elseif ($count < 60) {
+        $level = 3;
+    } elseif ($count < 80) {
+        $level = 4;
+    } elseif ($count < 120) {
+        $level = 5;
+    } elseif ($count < 160) {
+        $level = 6;
+    } else {
+        $level = 7;
     }
     return '<span class="t-sm c-sub"><i class="fa-regular fa-gem mr-1"></i>' . __('评论达人', PUOCK) . ' LV.' . $level . '</span>';
 }
@@ -204,7 +194,7 @@ function pk_get_post_date()
             $res = __('六天前',PUOCK);
             break;
         default:
-            $res = date('Y-m-d', $time);
+            $res = get_the_date(get_option('date_format'));
     }
     echo $res;
 }
@@ -224,14 +214,13 @@ function pk_get_color_tag($ex = array())
 
 function get_smiley_codes()
 {
-    //todo 本地化翻译
     return array(
-        ":?:" => "疑问", ":razz:" => "调皮", ":sad:" => "难过", ":evil:" => "抠鼻", ":naughty:" => "顽皮",
-        ":!:" => "吓", ":smile:" => "微笑", ":oops:" => "憨笑", ":neutral:" => "亲亲", ":cry:" => "大哭", ":mrgreen:" => "呲牙",
-        ":grin:" => "坏笑", ":eek:" => "惊讶", ":shock:" => "发呆", ":???:" => "撇嘴", ":cool:" => "酷", ":lol:" => "偷笑",
-        ":mad:" => "咒骂", ":twisted:" => "发怒", ":roll:" => "白眼", ":wink:" => "鼓掌", ":idea:" => "想法", ":despise:" => "蔑视",
-        ":celebrate:" => "庆祝", ":watermelon:" => "西瓜", ":xmas:" => "圣诞", ":warn:" => "警告", ":rainbow:" => "彩虹",
-        ":loveyou:" => "爱你", ":love:" => "爱", ":beer:" => "啤酒",
+        ":?:" => __("疑问", PUOCK), ":razz:" => __("调皮", PUOCK), ":sad:" => __("难过", PUOCK), ":evil:" => __("抠鼻", PUOCK), ":naughty:" => __("顽皮", PUOCK),
+        ":!:" => __("吓", PUOCK), ":smile:" => __("微笑", PUOCK), ":oops:" => __("憨笑", PUOCK), ":neutral:" => __("亲亲", PUOCK), ":cry:" => __("大哭", PUOCK), ":mrgreen:" => __("呲牙", PUOCK),
+        ":grin:" => __("坏笑", PUOCK), ":eek:" => __("惊讶", PUOCK), ":shock:" => __("发呆", PUOCK), ":???:" => __("撇嘴", PUOCK), ":cool:" => __("酷", PUOCK), ":lol:" => __("偷笑", PUOCK),
+        ":mad:" => __("咒骂", PUOCK), ":twisted:" => __("发怒", PUOCK), ":roll:" => __("白眼", PUOCK), ":wink:" => __("鼓掌", PUOCK), ":idea:" => __("想法", PUOCK), ":despise:" => __("蔑视", PUOCK),
+        ":celebrate:" => __("庆祝", PUOCK), ":watermelon:" => __("西瓜", PUOCK), ":xmas:" => __("圣诞", PUOCK), ":warn:" => __("警告", PUOCK), ":rainbow:" => __("彩虹", PUOCK),
+        ":loveyou:" => __("爱你", PUOCK), ":love:" => __("爱", PUOCK), ":beer:" => __("啤酒", PUOCK),
     );
 }
 
@@ -292,33 +281,99 @@ function smilies_custom_button($context)
         <span>' . __('添加表情', PUOCK) . '</span>
         </a><div id="insert-smiley-wrap" class="pk-media-wrap" style="display: none">' . get_wpsmiliestrans() . '</div>';
 }
-
-function get_post_images($_post = null)
+/**
+ * 获取文章真实封面图：优先级 = 特色图 > 外部特色图 > 内容第一张图（支持 Markdown）
+ *
+ * @param int|WP_Post|null $_post 文章 ID 或对象，null 则使用全局 $post
+ * @return string 图片 URL，不存在时返回空字符串
+ */
+function pk_get_post_cover_image($_post = null): string
 {
     global $post;
-    if ($_post != null) {
-        $post = $_post;
+
+    $post_obj = $_post ? get_post($_post) : $post;
+    if (!$post_obj) {
+        return '';
     }
-    $post_id = $post->ID;
-    // 如果有封面图取封面图
-    if (has_post_thumbnail()) {
-        $res = get_the_post_thumbnail_url($post, 'large');
-        if ($res != null) {
-            return $res;
+
+    $post_id = (int)$post_obj->ID;
+    $content = $post_obj->post_content;
+
+    if (has_post_thumbnail($post_id)) {
+        $featured_url = get_the_post_thumbnail_url($post_id, 'large');
+        if ($featured_url) {
+            return esc_url($featured_url);
         }
     }
-    if ($post_id == null && $post) {
-        $content = $post->post_content;
-    } else {
-        $content = get_post($post_id)->post_content;
+
+    $external_thumb = get_post_meta($post_id, 'external_thumbnail_url', true);
+    if ($external_thumb) {
+        return esc_url($external_thumb);
     }
-    preg_match_all('/<img.+src=[\'"]([^\'"]+)[\'"].*>/i', $content, $matches);
-    if ($matches && $matches[1]) {
-        $res = $matches[1][0];
-    } else {
-        $res = get_template_directory_uri() . '/assets/img/random/' . mt_rand(1, 8) . '.jpg';
+
+    $first_image = null;
+    if (preg_match('/!\[[^\]]*\]\(\s*([^\s\)]+?)\s*([\'"][^\'"]*?[\'"])?\s*\)/i', $content, $matches)) {
+        $first_image = trim($matches[1]);
+    } elseif (preg_match('/<img[^>]+src=[\'"]([^\'"]+)[\'"]/i', $content, $matches)) {
+        $first_image = $matches[1];
     }
-    return $res;
+
+    if ($first_image && filter_var($first_image, FILTER_VALIDATE_URL)) {
+        return esc_url($first_image);
+    }
+
+    return '';
+}
+
+function pk_post_has_cover_image($_post = null): bool
+{
+    return pk_get_post_cover_image($_post) !== '';
+}
+
+/**
+ * 获取文章封面图：优先级 = 真实封面图 > 随机默认图
+ *
+ * @param int|WP_Post|null $_post 文章 ID 或对象，null 则使用全局 $post
+ * @return string 图片 URL
+ */
+function get_post_images($_post = null): string
+{
+    global $post;
+
+    $cover_image = pk_get_post_cover_image($_post);
+    if ($cover_image !== '') {
+        return $cover_image;
+    }
+
+    $post_obj = $_post ? get_post($_post) : $post;
+    if (!$post_obj) {
+        return get_random_default_image();
+    }
+
+    return get_random_default_image((int)$post_obj->ID);
+}
+
+/**
+ * 获取随机默认图片
+ * 基于文章ID生成伪随机数，确保同一文章始终使用相同图片，不同文章尽量不同
+ *
+ * @param int|null $post_id 文章ID，为null时使用纯随机
+ * @return string 默认图 URL
+ */
+function get_random_default_image($post_id = null): string
+{
+    $img_dir = get_template_directory() . '/assets/img/random/';
+    $img_uri = get_template_directory_uri() . '/assets/img/random/';
+    $files = glob($img_dir . '*.{jpg,jpeg,png,gif,webp,avif}', GLOB_BRACE);
+    $count = $files ? count($files) : 8;
+    if ($post_id) {
+        $index = (crc32('puock_rand_' . $post_id) % $count);
+        $index = abs($index);
+    } else {
+        $index = mt_rand(0, $count - 1);
+    }
+    $filename = $files ? basename($files[$index]) : ($index + 1) . '.jpg';
+    return esc_url($img_uri . $filename);
 }
 
 //分页功能
@@ -446,7 +501,7 @@ function pk_icon_mate() {
  */
 function pk_get_seo_title() {
     // 未启用SEO返回空
-    if (!pk_is_checked('seo_open',true)) {
+    if (!pk_is_checked('seo_open',true) || defined('THE_SEO_FRAMEWORK_VERSION')) {
         return '';
     }
     // 用户定义的连接符
@@ -456,7 +511,7 @@ function pk_get_seo_title() {
     // 分页情况
     $pk_paged_title = '';
     if (get_query_var('paged')) {
-        $pk_paged_title = $pk_title_conn . '第' . get_query_var('paged') . '页';
+        $pk_paged_title = $pk_title_conn . sprintf(__('第%d页', PUOCK), get_query_var('paged'));
     }
     // 获取SEO设置
     $pk_custom_seo_title = pk_get_custom_seo()['title'] ?? '';
@@ -475,23 +530,23 @@ function pk_get_seo_title() {
             $pk_title .= $pk_blog_name . $pk_paged_title;
         }
     } else if (is_search()) {
-        $pk_title .= '搜索“' . $_REQUEST['s'] . '”的结果' . $pk_common_end;
+        $pk_title .= sprintf(__('搜索"%s"的结果', PUOCK), esc_html($_REQUEST['s'])) . $pk_common_end;
     } else if (is_single() || is_page()) {
         $pk_title .= single_post_title('', false) . $pk_common_end;
     } else if (is_year()) {
-        $pk_title .= get_the_time('Y年') . '的所有文章' . $pk_common_end;
+        $pk_title .= sprintf(__('%s年的所有文章', PUOCK), get_the_time('Y')) . $pk_common_end;
     } else if (is_month()) {
-        $pk_title .= get_the_time('m') . '的所有文章' . $pk_common_end;
+        $pk_title .= sprintf(__('%s月的所有文章', PUOCK), get_the_time('m')) . $pk_common_end;
     } else if (is_day()) {
-        $pk_title .= get_the_time('Y年m月d日') . '的所有文章' . $pk_common_end;
+        $pk_title .= sprintf(__('%s年%s月%s日的所有文章', PUOCK), get_the_time('Y'), get_the_time('m'), get_the_time('d')) . $pk_common_end;
     } else if (is_author()) {
-        $pk_title .= '作者：' . get_the_author() . $pk_common_end;
+        $pk_title .= sprintf(__('作者：%s', PUOCK), get_the_author()) . $pk_common_end;
     } else if (is_category()) {
         $pk_title .= single_cat_title('', false) . $pk_common_end;
     } else if (is_tag()) {
         $pk_title .= single_tag_title('', false) . $pk_common_end;
     } else if (is_404()) {
-        $pk_title .= '你访问的资源不存在' . $pk_common_end;
+        $pk_title .= __('你访问的资源不存在', PUOCK) . $pk_common_end;
     } else {
         $pk_title .= $pk_blog_name . $pk_paged_title;
     }

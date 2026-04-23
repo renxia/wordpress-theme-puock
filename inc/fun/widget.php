@@ -2,15 +2,15 @@
 
 abstract class puockWidgetBase extends WP_Widget{
 
-    public static $puock = 'Puock主题';
+    public static $puock = 'Puock';
 
-    protected $title = "标题";
+    protected $title = "";
 
-    protected $pre_title = '显示近期的';
+    protected $pre_title = '';
 
     function __construct() {
-        WP_Widget::__construct($this->get_class_name(), self::$puock." ".$this->title,
-            array('description' => $this->pre_title.$this->title));
+        WP_Widget::__construct($this->get_class_name(), self::$puock." ".__($this->title, PUOCK),
+            array('description' => __($this->pre_title, PUOCK).__($this->title, PUOCK)));
     }
 
     public function html_gen($instance, $title, $key, $type='input', $showLabel=true){
@@ -26,7 +26,7 @@ abstract class puockWidgetBase extends WP_Widget{
         }
         if($type=='cats'){
             $out .= wp_dropdown_categories(array('name' => $fname,'echo'=>0,
-                'show_option_all' => '全部分类', 'hide_empty'=>0, 'hierarchical'=>1, 'selected'=>@$instance[$key]));
+                'show_option_all' => __('全部分类', PUOCK), 'hide_empty'=>0, 'hierarchical'=>1, 'selected'=>@$instance[$key]));
         }
         if($type=='text'){
             $out .= '<textarea class="monospace widefat" rows="10" cols="40" id="'.($fid).'" 
@@ -74,9 +74,9 @@ abstract class puockWidgetBase extends WP_Widget{
      * @param $instance
      */
     public function merge_common_form($instance){
-        $this->html_gen($instance, '隐藏标题', 'hide_title','checkbox',false);
-        $this->html_gen($instance, '图标类', 'icon');
-        $this->html_gen($instance, '区块class类', 'classes');
+        $this->html_gen($instance, __('隐藏标题', PUOCK), 'hide_title','checkbox',false);
+        $this->html_gen($instance, __('图标类', PUOCK), 'icon');
+        $this->html_gen($instance, __('区块class类', PUOCK), 'classes');
     }
 
     function update( $cur, $old ) {
@@ -215,11 +215,11 @@ abstract class puockWidgetBase extends WP_Widget{
     */
     public function common_post_list_form($instance,$callback=null){
         $instance = $this->default_value($instance);
-        $this->html_gen($instance, '标题', 'title');
-        $this->html_gen($instance, '显示篇数', 'nums');
-        $this->html_gen($instance, '最近N天内', 'days');
-        $this->html_gen($instance, '指定分类ID（多个ID之间使用,进行分隔）', 'categories');
-        $this->html_gen($instance, '简洁风格', 'simple','checkbox',false);
+        $this->html_gen($instance, __('标题', PUOCK), 'title');
+        $this->html_gen($instance, __('显示篇数', PUOCK), 'nums');
+        $this->html_gen($instance, __('最近N天内', PUOCK), 'days');
+        $this->html_gen($instance, __('指定分类ID（多个ID之间使用,进行分隔）', PUOCK), 'categories');
+        $this->html_gen($instance, __('简洁风格', PUOCK), 'simple','checkbox',false);
         if($callback){
             $callback();
         }
@@ -233,9 +233,16 @@ abstract class puockWidgetBase extends WP_Widget{
 class puockHotPost extends puockWidgetBase {
 
 
-    protected $title = "热门文章";
+    protected $title = '';
 
-    protected $pre_title = "根据阅读量显示最近的";
+    protected $pre_title = '';
+
+    function __construct() {
+        $this->title = __('热门文章', PUOCK);
+        $this->pre_title = __('根据阅读量显示最近的', PUOCK);
+        parent::__construct();
+    }
+
 
     function get_fields(){
         return $this->common_post_list_fields();
@@ -293,7 +300,13 @@ add_action( 'widgets_init', function (){ register_widget('puockHotPost'); });
 //最新文章
 class puockNewPost extends puockWidgetBase {
 
-    protected $title = "最新文章";
+    protected $title = '';
+
+    function __construct() {
+        $this->title = __('最新文章', PUOCK);
+        parent::__construct();
+    }
+
 
     function get_class_name()
     {
@@ -343,7 +356,13 @@ add_action( 'widgets_init', function (){ register_widget('puockNewPost'); });
 //热评文章
 class puockHotCommentPost extends puockWidgetBase {
 
-    protected $title = "热评文章";
+    protected $title = '';
+
+    function __construct() {
+        $this->title = __('热评文章', PUOCK);
+        parent::__construct();
+    }
+
 
     function get_class_name()
     {
@@ -394,9 +413,16 @@ add_action( 'widgets_init', function (){ register_widget('puockHotCommentPost');
 //读者墙
 class puockReadPerson extends puockWidgetBase {
 
-    protected $title = "读者墙";
+    protected $title = '';
 
-    protected $pre_title = "展示网站的读者形成";
+    protected $pre_title = '';
+
+    function __construct() {
+        $this->title = __('读者墙', PUOCK);
+        $this->pre_title = __('展示网站的读者形成', PUOCK);
+        parent::__construct();
+    }
+
 
     function get_class_name()
     {
@@ -405,7 +431,7 @@ class puockReadPerson extends puockWidgetBase {
 
     function get_fields(){
         return $this->merge_common_fields(array(
-            array('id'=>'title','strip'=>true, 'val'=>$this->title),
+            array('id'=>'title','strip'=>true, 'val'=>__('读者墙', PUOCK)),
             array('id'=>'nums', 'val'=>10),
             array('id'=>'days', 'val'=>31),
         ));
@@ -413,9 +439,9 @@ class puockReadPerson extends puockWidgetBase {
 
     function form( $instance ) {
         $instance = $this->default_value($instance);
-        $this->html_gen($instance, '标题', 'title');
-        $this->html_gen($instance, '显示数量', 'nums');
-        $this->html_gen($instance, '最近N天内', 'days');
+        $this->html_gen($instance, __('标题', PUOCK), 'title');
+        $this->html_gen($instance, __('显示数量', PUOCK), 'nums');
+        $this->html_gen($instance, __('最近N天内', PUOCK), 'days');
         $this->merge_common_form($instance);
     }
 
@@ -458,9 +484,16 @@ add_action( 'widgets_init', function (){ register_widget('puockReadPerson'); });
 //最新评论
 class puockNewComment extends puockWidgetBase {
 
-    protected $title = "最新评论";
+    protected $title = '';
 
-    protected $pre_title = "展示网站的";
+    protected $pre_title = '';
+
+    function __construct() {
+        $this->title = __('最新评论', PUOCK);
+        $this->pre_title = __('展示网站的', PUOCK);
+        parent::__construct();
+    }
+
 
     function get_class_name()
     {
@@ -469,15 +502,15 @@ class puockNewComment extends puockWidgetBase {
 
     function get_fields(){
         return $this->merge_common_fields(array(
-            array('id'=>'title','strip'=>true, 'val'=>$this->title),
+            array('id'=>'title','strip'=>true, 'val'=>__('最新评论', PUOCK)),
             array('id'=>'nums', 'val'=>10),
         ));
     }
 
     function form( $instance ) {
         $instance = $this->default_value($instance);
-        $this->html_gen($instance, '标题', 'title');
-        $this->html_gen($instance, '显示数量', 'nums');
+        $this->html_gen($instance, __('标题', PUOCK), 'title');
+        $this->html_gen($instance, __('显示数量', PUOCK), 'nums');
         $this->merge_common_form($instance);
     }
 
@@ -523,9 +556,16 @@ add_action( 'widgets_init', function (){ register_widget('puockNewComment'); });
 //增强文本
 class puockStrongText extends puockWidgetBase {
 
-    protected $title = "HTML文本";
+    protected $title = '';
 
-    protected $pre_title = "支持HTML/JS/CSS";
+    protected $pre_title = '';
+
+    function __construct() {
+        $this->title = __('HTML文本', PUOCK);
+        $this->pre_title = __('支持HTML/JS/CSS', PUOCK);
+        parent::__construct();
+    }
+
 
     function get_class_name()
     {
@@ -534,15 +574,15 @@ class puockStrongText extends puockWidgetBase {
 
     function get_fields(){
         return $this->merge_common_fields(array(
-            array('id'=>'title','strip'=>true, 'val'=>$this->title),
+            array('id'=>'title','strip'=>true, 'val'=>__('HTML文本', PUOCK)),
             array('id'=>'content', 'val'=>''),
         ));
     }
 
     function form( $instance ) {
         $instance = $this->default_value($instance);
-        $this->html_gen($instance, '标题', 'title');
-        $this->html_gen($instance, '内容', 'content','text');
+        $this->html_gen($instance, __('标题', PUOCK), 'title');
+        $this->html_gen($instance, __('内容', PUOCK), 'content','text');
         $this->merge_common_form($instance);
     }
 
@@ -557,9 +597,16 @@ add_action( 'widgets_init', function (){ register_widget('puockStrongText'); });
 //搜索框
 class puockSearch extends puockWidgetBase {
 
-    protected $title = "搜索框";
+    protected $title = '';
+    
+    protected $pre_title = '';
 
-    protected $pre_title = "提供便捷快速的";
+    function __construct() {
+        $this->title = __('搜索框', PUOCK);
+        $this->pre_title = __('提供便捷快速的', PUOCK);
+        parent::__construct();
+    }
+
 
     function get_class_name()
     {
@@ -568,17 +615,17 @@ class puockSearch extends puockWidgetBase {
 
     function get_fields(){
         return array(
-            array('id'=>'title','strip'=>true, 'val'=>'文章搜索'),
-            array('id'=>'pl', 'val'=>'输入关键字回车搜索'),
+            array('id'=>'title','strip'=>true, 'val'=>__('文章搜索', PUOCK)),
+            array('id'=>'pl', 'val'=>__('输入关键字回车搜索', PUOCK)),
             array('id'=>'hide_title', 'val'=>0),
         );
     }
 
     function form( $instance ) {
         $instance = $this->default_value($instance);
-        $this->html_gen($instance, '标题', 'title');
-        $this->html_gen($instance, '搜索框预留文字', 'pl');
-        $this->html_gen($instance, '隐藏标题', 'hide_title','checkbox',false);
+        $this->html_gen($instance, __('标题', PUOCK), 'title');
+        $this->html_gen($instance, __('搜索框预留文字', PUOCK), 'pl');
+        $this->html_gen($instance, __('隐藏标题', PUOCK), 'hide_title','checkbox',false);
     }
 
     function widget( $args, $instance ){ ?>
@@ -604,9 +651,16 @@ add_action( 'widgets_init', function (){ register_widget('puockSearch'); });
 //随机文章
 class puockRandomPost extends puockWidgetBase {
 
-    protected $title = "随机文章";
+    protected $title = '';
+    
+    protected $pre_title = '';
 
-    protected $pre_title = "显示指定范围内的";
+    function __construct() {
+        $this->title = __('随机文章', PUOCK);
+        $this->pre_title = __('显示指定范围内的', PUOCK);
+        parent::__construct();
+    }
+
 
     function get_fields(){
         return $this->common_post_list_fields();
@@ -637,13 +691,20 @@ add_action( 'widgets_init', function (){ register_widget('puockRandomPost'); });
 //关于博主
 class puockAboutAuthor extends puockWidgetBase {
 
-    protected $title = "关于博主";
+    protected $title = '';
+    
+    protected $pre_title = '';
 
-    protected $pre_title = "显示博客的主人-";
+    function __construct() {
+        $this->title = __('关于博主', PUOCK);
+        $this->pre_title = __('显示博客的主人-', PUOCK);
+        parent::__construct();
+    }
+
 
     function get_fields(){
         return $this->merge_common_fields(array(
-            array('id'=>'title','strip'=>true, 'val'=>$this->title),
+            array('id'=>'title','strip'=>true, 'val'=>__('关于博主', PUOCK)),
             array('id'=>'name', 'val'=>get_bloginfo('name')),
             array('id'=>'email', 'val'=>get_bloginfo('admin_email')),
             array('id'=>'des', 'val'=>get_bloginfo('description')),
@@ -657,15 +718,15 @@ class puockAboutAuthor extends puockWidgetBase {
 
     function form( $instance ) {
         $instance = $this->default_value($instance);
-        $this->html_gen($instance, '标题', 'title');
-        $this->html_gen($instance, '博主名字', 'name');
-        $this->html_gen($instance, '介绍(支持html/js)', 'des','text');
-        $this->html_gen($instance, '邮箱(用于获取头像)', 'email');
-        $this->html_gen($instance, '顶部背景图url', 'cover');
-        $this->html_gen($instance, '显示用户数', 'show_users','checkbox',false);
-        $this->html_gen($instance, '显示文章数', 'show_posts','checkbox',false);
-        $this->html_gen($instance, '显示评论数', 'show_comments','checkbox',false);
-        $this->html_gen($instance, '显示阅读量', 'show_views','checkbox',false);
+        $this->html_gen($instance, __('标题', PUOCK), 'title');
+        $this->html_gen($instance, __('博主名字', PUOCK), 'name');
+        $this->html_gen($instance, __('介绍(支持html/js)', PUOCK), 'des','text');
+        $this->html_gen($instance, __('邮箱(用于获取头像)', PUOCK), 'email');
+        $this->html_gen($instance, __('顶部背景图url', PUOCK), 'cover');
+        $this->html_gen($instance, __('显示用户数', PUOCK), 'show_users','checkbox',false);
+        $this->html_gen($instance, __('显示文章数', PUOCK), 'show_posts','checkbox',false);
+        $this->html_gen($instance, __('显示评论数', PUOCK), 'show_comments','checkbox',false);
+        $this->html_gen($instance, __('显示阅读量', PUOCK), 'show_views','checkbox',false);
         $this->merge_common_form($instance);
     }
 
@@ -680,10 +741,10 @@ class puockAboutAuthor extends puockWidgetBase {
         $des = $instance['des'];
         $email = $instance['email'];
         $cover = $instance['cover'];
-        $show_views = $instance['show_views'] ?? 'on';
-        $show_comments = $instance['show_comments'] ?? 'on';
-        $show_posts = $instance['show_posts'] ?? 'on';
-        $show_users = $instance['show_users'] ?? 'on';
+        $show_views = isset($instance['show_views']) && $instance['show_views'] === 'on';
+        $show_comments = isset($instance['show_comments']) && $instance['show_comments'] === 'on';
+        $show_posts = isset($instance['show_posts']) && $instance['show_posts'] === 'on';
+        $show_users = isset($instance['show_users']) && $instance['show_users'] === 'on';
 
         // 获取评论数
         $comment_num = pk_cache_get(PKC_TOTAL_COMMENTS);
@@ -755,21 +816,28 @@ add_action( 'widgets_init', function (){ register_widget('puockAboutAuthor'); })
 class puockCategory extends puockWidgetBase {
 
 
-    protected $title = "分类目录";
+    protected $title = '';
+    
+    protected $pre_title = '';
 
-    protected $pre_title = "显示博客的所有";
+    function __construct() {
+        $this->title = __('分类目录', PUOCK);
+        $this->pre_title = __('显示博客的所有', PUOCK);
+        parent::__construct();
+    }
+
 
     function get_fields(){
         return $this->merge_common_fields(array(
-            array('id'=>'title','strip'=>true, 'val'=>$this->title),
+            array('id'=>'title','strip'=>true, 'val'=>__('分类目录', PUOCK)),
             array('id'=>'categories','strip'=>true, 'val'=>''),
         ));
     }
 
     function form( $instance ) {
         $instance = $this->default_value($instance);
-        $this->html_gen($instance, '标题', 'title');
-        $this->html_gen($instance, '指定分类ID（多个ID之间使用,进行分隔）', 'categories');
+        $this->html_gen($instance, __('标题', PUOCK), 'title');
+        $this->html_gen($instance, __('指定分类ID（多个ID之间使用,进行分隔）', PUOCK), 'categories');
         $this->merge_common_form($instance);
     }
 
@@ -810,21 +878,30 @@ add_action( 'widgets_init', function (){ register_widget('puockCategory'); });
 class puockTagCloud extends puockWidgetBase {
 
 
-    protected $title = "标签云";
+    protected $title = '';
+    
+    protected $pre_title = '';
 
-    protected $pre_title = "集成博客的标签为";
+    function __construct() {
+        $this->title = __('标签云', PUOCK);
+        $this->pre_title = __('集成博客的标签为', PUOCK);
+        parent::__construct();
+    }
+
 
     function get_fields(){
         return $this->merge_common_fields(array(
-            array('id'=>'title','strip'=>true, 'val'=>$this->title),
+            array('id'=>'title','strip'=>true, 'val'=>__('标签云', PUOCK)),
             array('id'=>'max_count','strip'=>true, 'val'=>0),
+            array('id'=>'random_sort', 'strip'=>true, 'val'=>0),
         ));
     }
 
     function form( $instance ) {
         $instance = $this->default_value($instance);
-        $this->html_gen($instance, '标题', 'title');
-        $this->html_gen($instance, '最大显示数量（0为不限制）', 'max_count');
+        $this->html_gen($instance, __('标题', PUOCK), 'title');
+        $this->html_gen($instance, __('最大显示数量（0为不限制）', PUOCK), 'max_count');
+        $this->html_gen($instance, __('随机显示标签', PUOCK), 'random_sort', 'checkbox');
         $this->merge_common_form($instance);
     }
 
@@ -841,10 +918,14 @@ class puockTagCloud extends puockWidgetBase {
     function widget( $args, $instance ){
         $this->get_common_widget_header($instance);
         echo '<div class="widget-puock-tag-cloud">';
+        $is_random_checked = isset($instance['random_sort']) && $instance['random_sort'] === 'on';
         $tags = pk_cache_get(PKC_WIDGET_TAGS);
         if(!$tags){
             $tags = get_tags();
             pk_cache_set(PKC_WIDGET_TAGS,$tags);
+        }
+        if ($is_random_checked) {
+            shuffle($tags);
         }
         $max_count = $this->get_num_val($instance, 'max_count');
         if(count($tags) > 0){
@@ -858,7 +939,7 @@ class puockTagCloud extends puockWidgetBase {
                 $count++;
             }
         }else{
-            echo "<span class='c-sub fs14'>暂无标签</span>";
+            echo "<span class='c-sub fs14'>" . __('暂无标签', PUOCK) . "</span>";
         }
         echo '</div>';
         $this->get_common_widget_footer($instance);
@@ -871,21 +952,28 @@ add_action( 'widgets_init', function (){ register_widget('puockTagCloud'); });
 class puockTagHitokoto extends puockWidgetBase {
 
 
-    protected $title = "一言一句话";
+    protected $title = '';
+    
+    protected $pre_title = '';
 
-    protected $pre_title = "随机展示";
+    function __construct() {
+        $this->title = __('一言一句话', PUOCK);
+        $this->pre_title = __('随机展示', PUOCK);
+        parent::__construct();
+    }
+
 
     function get_fields(){
         return $this->merge_common_fields(array(
-            array('id'=>'title','strip'=>true, 'val'=>$this->title),
+            array('id'=>'title','strip'=>true, 'val'=>__('一言一句话', PUOCK)),
             array('id'=>'api','strip'=>true, 'val'=>''),
         ));
     }
 
     function form( $instance ) {
         $instance = $this->default_value($instance);
-        $this->html_gen($instance, '标题', 'title');
-        $this->html_gen($instance, '自定义API', 'api');
+        $this->html_gen($instance, __('标题', PUOCK), 'title');
+        $this->html_gen($instance, __('自定义API', PUOCK), 'api');
         $this->merge_common_form($instance);
     }
 

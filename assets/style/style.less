@@ -2,6 +2,7 @@
 @import "init";
 @import "common";
 @import "animation";
+@import "markdown";
 
 body {
   background-color: var(--pk-bg-body);
@@ -14,40 +15,8 @@ body {
   box-shadow: none;
 }
 
-//引用
-blockquote {
-  padding: .8em;
-  margin: 10px 0;
-  background-color: var(--pk-bg-box-content);
-  border-left: 5px solid #c1c1c1;
-  border-radius: 4px;
-}
-
-//覆盖样式
-[id^=hljs-item]{
-  font-size: 13px;
-}
-.hljs-ln-numbers {
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  text-align: center;
-  color: #8e8d8d;
-  vertical-align: top;
-  display: inline-block;
-  margin-right: 10px;
-
-  .hljs-ln-n {
-    margin-right: 3px;
-    min-width: 20px;
-    word-break: normal;
-  }
-}
-
-.hljs-ln-code {
-  padding-left: 10px;
+body.puock-dark {
+  background-blend-mode: darken;
 }
 
 .toastify {
@@ -217,9 +186,9 @@ blockquote {
   }
 
   .swiper-wrapper {
-
     img {
       height: 100%;
+      object-fit: cover;
     }
 
     .swiper-title {
@@ -373,8 +342,10 @@ body.pre-mac pre {
         text-align: center;
         margin-bottom: 0;
         @subHeight: (@h / 1.2);
-        height: @subHeight;
+        height: auto;
+        min-height: @subHeight;
         line-height: @subHeight;
+        white-space: nowrap;
 
         &.menu-current, &:hover {
           background-color: var(--pk-c-primary);
@@ -454,8 +425,8 @@ body.pre-mac pre {
   user-select: none;
   position: fixed;
   left: auto;
-  right: 47px;
-  bottom: 170px;
+  right: 45px;
+  bottom: 166px;
   top: auto;
   z-index: 999;
   
@@ -476,27 +447,26 @@ body.pre-mac pre {
   }
 
   #post-menu-state {
-    @w: 40px;
+    @w: 34px;
     position: absolute; // 使用绝对定位
     left: 0; // 按钮位于左侧
     bottom: 0; // 底部对齐
-    background-color: var(--pk-c-primary); // 使用主题色
     width: @w;
     height: @w;
-    border-radius: 10px; // 默认全圆角
+    border-radius: 4px;
     text-align: center;
     cursor: pointer;
     display: flex;
     justify-content: center;
     align-items: center;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-    border: none; // 去掉边框
     transition: all 0.3s ease;
-    z-index: 1001; // 确保按钮始终在最上层
+    background-color: var(--pk-bg-box);
+    box-sizing: border-box;
+    box-shadow: 2px 2px 5px var(--pk-c-block-shadow);
+    z-index: 0; // 确保按钮始终在最上层
     
     i {
       font-size: 16px;
-      color: #fff; // 图标颜色为白色
       transition: all 0.3s ease;
     }
     
@@ -912,6 +882,58 @@ a:hover {
       }
     }
 
+    &.post-item-no-thumb {
+      .post-info {
+        width: 100%;
+      }
+    }
+
+    &.post-item-list.post-item-no-thumb {
+      min-height: 170px;
+
+      .post-info {
+        padding: 4px 2px 2px 0;
+      }
+
+      .info-title {
+        line-clamp: 2;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        display: -webkit-box;
+        white-space: normal;
+      }
+
+      .info-meta {
+        margin-top: 10px;
+      }
+    }
+
+    &.post-item-card.post-item-no-thumb {
+      .post-item-block {
+        min-height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        background: linear-gradient(135deg, rgba(28, 96, 243, 0.08), rgba(28, 96, 243, 0) 58%);
+      }
+
+      .post-tags-inline {
+        margin-bottom: 10px;
+
+        .badge:not(:last-child) {
+          margin-right: 4px;
+        }
+      }
+
+      .post-info {
+        min-height: 170px;
+      }
+
+      .info-meta {
+        margin: 10px 0 14px;
+      }
+    }
+
     &:hover {
       .thumbnail {
         img {
@@ -971,6 +993,60 @@ a:hover {
     &:nth-child(odd) {
       padding-left: 0;
       padding-right: 7px;
+    }
+
+    // 修复 3/4 列时横向间距（odd/even 仅适用于 2 列）
+    // 4列在 md 断点会变为 3 列（col-md-4），同样需要处理
+    @media (min-width: 768px) {
+      &.col-md-4:nth-child(3n+1) {
+        padding-left: 0;
+        padding-right: 7px;
+      }
+
+      &.col-md-4:nth-child(3n+2) {
+        padding-left: 7px;
+        padding-right: 7px;
+      }
+
+      &.col-md-4:nth-child(3n) {
+        padding-left: 7px;
+        padding-right: 0;
+      }
+    }
+
+    @media (min-width: 992px) {
+      // 3列（col-lg-4）：[L0 Rg] [Lg Rg] [Lg R0]
+      &.col-lg-4:nth-child(3n+1) {
+        padding-left: 0;
+        padding-right: 7px;
+      }
+
+      &.col-lg-4:nth-child(3n+2) {
+        padding-left: 7px;
+        padding-right: 7px;
+      }
+
+      &.col-lg-4:nth-child(3n) {
+        padding-left: 7px;
+        padding-right: 0;
+      }
+
+      // 4列（col-lg-3）：[L0 Rg] [Lg Rg] [Lg Rg] [Lg R0]
+      &.col-lg-3:nth-child(4n+1) {
+        padding-left: 0;
+        padding-right: 7px;
+      }
+
+      &.col-lg-3:nth-child(4n+2),
+      &.col-lg-3:nth-child(4n+3) {
+        padding-left: 7px;
+        padding-right: 7px;
+      }
+
+      &.col-lg-3:nth-child(4n) {
+        padding-left: 7px;
+        padding-right: 0;
+      }
     }
 
     .p-block {
@@ -1157,196 +1233,6 @@ a:hover {
 
   .entry-title {
     font-size: 20px;
-  }
-
-  .entry-content, .entry-content-box {
-    font-size: 15px;
-
-    &.p-indent > p:not(.no-indent) {
-      text-indent: 2rem;
-    }
-
-    a:not(.btn,.fancybox,.no-icon) {
-      &:before {
-        content: "\f0c1";
-        font-family: var(--fa-style-family, "Font Awesome 6 Free");
-        margin-right: 3px;
-        font-weight: var(--fa-style, 900);
-        font-size: 12px;
-        display: none;
-      }
-    }
-
-    &.show-link-icon {
-      a:not(.btn,.fancybox,.no-icon) {
-        &:before {
-          display: inline-block;
-        }
-      }
-    }
-
-    .p-block {
-      box-shadow: none;
-      border-width: 1px;
-      border-style: solid;
-      border-color: var(--pk-c-border);
-    }
-
-    p {
-      margin: 10px 0 !important;
-      line-height: 2;
-    }
-
-    video {
-      max-width: 100%;
-    }
-
-    blockquote {
-      p:not(:last-child) {
-        margin: 0 0 10px 0 !important;
-      }
-
-      p:last-child {
-        margin: 0 !important;
-      }
-    }
-
-    h1, h2, h3, h4, h5, h6 {
-      position: relative;
-      margin: 16px 0;
-
-      &:after {
-        content: ' ';
-        display: block;
-        border: 2px solid var(--pk-c-primary);
-        border-radius: 5px;
-        width: 36px;
-        opacity: .8;
-        margin-top: 2px;
-      }
-    }
-
-    .entry-h-border(@color) {
-      border-bottom: 1px solid @color;
-      border-left: 2px solid @color;
-    }
-
-    br:before {
-      display: block;
-      content: ' ';
-      margin: 10px 0;
-    }
-
-    .h-config(@size) {
-      font-size: @size;
-    }
-
-    h1 {
-      .h-config(26px)
-    }
-
-    h2 {
-      .h-config(24px);
-    }
-
-    h3 {
-      .h-config(22px);
-    }
-
-    h4 {
-      .h-config(20px)
-    }
-
-    h5 {
-      .h-config(18px)
-    }
-
-    h6 {
-      .h-config(16px)
-    }
-
-    code:not([class]) {
-      margin: 2px 4px;
-      padding: 0 6px;
-      border-radius: 4px;
-      box-shadow: 0 1px 1px rgba(0, 0, 0, 0.125);
-      background-color: var(--pk-bg-body);
-      display: inline-block;
-      font-family: "Segoe UI", "Microsoft YaHei", "Hiragino Sans GB", "WenQuanYi Micro Hei", sans-serif;
-      text-indent: initial;
-    }
-
-    img:not(.wp-smiley) {
-      max-width: 100%;
-      height: auto;
-      margin: 10px auto;
-      display: block;
-      border-radius: 2px;
-      cursor: pointer;
-      transition: all .3s;
-
-      &:hover {
-        opacity: .8;
-      }
-    }
-
-    .alert {
-      margin-bottom: 10px;
-    }
-
-    a:not(.btn) {
-      color: var(--pk-c-primary);
-    }
-
-    a:not(.btn,.hide-hover):not(.post-page-numbers) {
-      .ta3-fun();
-
-      &:hover {
-        opacity: .8;
-        color: rgba(var(--pk-c-primary), 60%);
-      }
-    }
-
-
-    .btn, .p-block {
-      margin-bottom: 10px !important;
-    }
-
-    pre {
-      & > code {
-        background-color: transparent !important;
-      }
-
-    }
-
-    .post-foot-qrcode {
-      margin-top: 20px;
-      text-align: center;
-
-      .title {
-        display: inline-block;
-        padding: 6px 10px;
-        background: #0e0e0e;
-        color: #fff;
-        border-radius: 10px;
-        font-size: 10px;
-      }
-
-      img {
-        width: 180px;
-        border-radius: 10px;
-      }
-    }
-  }
-}
-
-.code-toolbar {
-  .toolbar {
-    position: absolute;
-    top: 0;
-    background: #000;
-    padding-top: 20px;
-    border-radius: 5px;
   }
 }
 
@@ -1886,6 +1772,7 @@ a:hover {
   position: fixed;
   right: 10px;
   bottom: 50px;
+  z-index: 999;
 
   .p-block {
     .--pk-wh(34px, 34px);
@@ -2262,27 +2149,82 @@ a:hover {
     .prod-item {
       .p-block {
         min-height: 400px;
+        position: relative;
+        padding-top: 40px;
+        padding-bottom: 20px;
+        transition: all 0.3s ease;
+
+        // 深色渐变背景遮罩，提升文字可读性
+        &::before {
+          content: "";
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: linear-gradient(to bottom,
+            rgba(0, 0, 0, 0.7) 0%,
+            rgba(0, 0, 0, 0.5) 20%,
+            rgba(0, 0, 0, 0.3) 50%,
+            rgba(20, 20, 20, 0.4) 80%,
+            rgba(40, 40, 40, 0.5) 100%);
+          z-index: 1;
+          transition: background 0.3s ease;
+        }
+
+        // 悬停时增强遮罩效果
+        &:hover::before {
+          background: linear-gradient(to bottom,
+            rgba(0, 0, 0, 0.75) 0%,
+            rgba(0, 0, 0, 0.6) 25%,
+            rgba(0, 0, 0, 0.4) 50%,
+            rgba(20, 20, 20, 0.5) 75%,
+            rgba(40, 40, 40, 0.6) 100%);
+        }
+
+        // 确保文字在遮罩层之上
+        a, .go, .desc {
+          position: relative;
+          z-index: 2;
+        }
       }
 
       margin-top: 60px;
 
       a {
-        color: var(--pk-c-font);
+        color: #ffffff !important;
         transition: all .3s;
       }
 
       .go {
-        color: var(--pk-c-font);
+        color: #ffffff !important;
         margin-top: 30px;
         text-align: center;
         font-size: @title-font-size;
+        font-weight: bold;
+        // 添加文字阴影增强可读性
+        text-shadow:
+          -1px -1px 0 #000,
+          1px -1px 0 #000,
+          -1px 1px 0 #000,
+          1px 1px 0 #000,
+          0 0 6px rgba(0, 0, 0, 0.9),
+          0 0 10px rgba(0, 0, 0, 0.7);
       }
 
       .desc {
-        color: var(--pk-c-font);
+        color: #f5f5f5 !important;
         font-size: @desc-font-size;
         margin-bottom: 0;
         text-align: center;
+        line-height: 1.5;
+        // 添加文字阴影增强可读性
+        text-shadow:
+          -0.5px -0.5px 0 #000,
+          0.5px -0.5px 0 #000,
+          -0.5px 0.5px 0 #000,
+          0.5px 0.5px 0 #000,
+          0 0 5px rgba(0, 0, 0, 0.8);
       }
     }
   }
@@ -2397,61 +2339,6 @@ a:hover {
   cursor: pointer;
   height: 28px;
   width: 100px;
-}
-
-.pk-code-tools {
-  background-color: #0b1c2c;
-  border-top-left-radius: var(--pk-g-box-radius);
-  border-top-right-radius: var(--pk-g-box-radius);
-  padding: 5px 10px 5px 10px;
-  display: flex;
-  justify-content: space-between;
-  align-content: center;
-  border-bottom: 1px dashed var(--pk-c-dark);
-
-  .dot {
-    i {
-      display: inline-block;
-      width: 11px;
-      height: 11px;
-      border-radius: 5.5px;
-
-      &:not(:last-child) {
-        margin-right: 5px;
-      }
-
-      &:nth-child(1) {
-        background-color: #FF5F56;
-      }
-
-      &:nth-child(2) {
-        background-color: #FFBD2E;
-      }
-
-      &:nth-child(3) {
-        background-color: #27C93F;
-      }
-    }
-  }
-
-  .actions {
-    .i {
-      font-size: 12px;
-      color: var(--pk-c-light);
-      cursor: pointer;
-      transition: all .3s;
-
-      &:hover {
-        opacity: .7;
-      }
-    }
-  }
-}
-
-.post-comment {
-  .pk-code-tools {
-    margin-top: 10px;
-  }
 }
 
 .post-poster {

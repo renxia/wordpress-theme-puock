@@ -46,7 +46,7 @@ $links = pk_get_wp_bookmarks([ 'category' => $cats ]);
 
 $groups = array();
 
-if(!empty($cats) && $links && count($links)>0){
+if($links && count($links)>0){
     $link_cats = get_all_category_id_row('link_category');
     $categorys = array();
     foreach ($link_cats as $cat) {
@@ -100,7 +100,7 @@ get_header();
                                         <?php endif;?>
                                         <div class="info">
                                             <p class="ml-1 text-nowrap text-truncate"><?php echo $link->link_name ?></p>
-                                            <p class="c-sub ml-1 text-nowrap text-truncate"><?php echo $desc ?? '暂无介绍' ?></p>
+                                            <p class="c-sub ml-1 text-nowrap text-truncate"><?php echo $desc ?? _('暂无介绍', PUOCK) ?></p>
                                         </div>
                                     </div>
                                 </a>

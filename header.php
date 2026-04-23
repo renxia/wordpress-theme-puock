@@ -1,5 +1,5 @@
 <!doctype html>
-<html>
+<html lang="<?php echo esc_attr(str_replace('_', '-', get_locale())) ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
@@ -8,7 +8,7 @@
     <meta http-equiv='content-language' content='<?php echo get_locale() ?>'>
     <?php echo pk_icon_mate(); ?>
     <?php echo pk_get_seo_title(); ?>
-    <?php if(pk_is_checked('seo_open',true)) get_template_part('inc/seo') ?>
+    <?php if(pk_is_checked('seo_open',true) && !defined('THE_SEO_FRAMEWORK_VERSION')) get_template_part('inc/seo') ?>
     <?php wp_head(); ?>
     <?php if (!empty(pk_get_option('tj_code_header', ''))): ?>
         <?php echo pk_get_option('tj_code_header', ''); ?>
@@ -49,6 +49,9 @@ echo current_theme_supports('custom-background') ? ' custom-background' : ''; ?>
                     <i class="fa fa-bars t-md mr-2 mobile-menu-s"></i>
                     <?php if (pk_is_checked('theme_mode_s')): ?>
                         <i class="fa fa-<?php echo((pk_theme_mode() === 'auto' ? 'circle-half-stroke' : (pk_theme_light() ? 'sun' : 'moon'))); ?> colorMode t-md mr-2"></i>
+                    <?php endif; ?>
+                    <?php if (pk_is_checked('cn_sc_tc_toggle')): ?>
+                        <i class="fa fa-language sc-tc-toggle t-md mr-2" style="cursor:pointer"></i>
                     <?php endif; ?>
                     <i class="search-modal-btn fa fa-search t-md position-relative" style="top:0.5px"></i>
                 </div>
